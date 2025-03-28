@@ -1,10 +1,15 @@
 {
-  "workspaces": {
-    "web": {
-      "name": "naserkashmirtours-web"
+  "buildCommand": "turbo build",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web/dist",
+  "rewrites": [
+    { 
+      "source": "/api/:path*",
+      "destination": "https://naserkashmirtours-api.vercel.app/:path*" 
     },
-    "api": {
-      "name": "naserkashmirtours-api"
+    { 
+      "source": "/(.*)", 
+      "destination": "/" 
     }
-  }
+  ]
 } 

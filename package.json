@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "turbo build",
+    "build:web": "turbo build --filter=@repo/web",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

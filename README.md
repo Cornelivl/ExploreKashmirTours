@@ -56,3 +56,48 @@ To run all apps and packages in development mode, run the following command:
 ```
 pnpm dev
 ```
+
+## Deployment Guide
+
+### Option 1: Deploy Frontend and Backend Separately (Recommended)
+
+1. **Deploy the Backend (API)**:
+   ```bash
+   cd apps/api
+   vercel
+   ```
+   - Note the deployed URL (e.g., `https://naserkashmirtours-api.vercel.app`)
+
+2. **Update Frontend Environment**:
+   - Edit `apps/web/.env` and set:
+   ```
+   VITE_API_URL=https://your-api-url-from-step-1
+   ```
+
+3. **Deploy the Frontend**:
+   ```bash
+   cd apps/web
+   vercel
+   ```
+
+### Option 2: Deploy Frontend Only (Using Existing Backend)
+
+1. **Update Frontend Environment**:
+   - Edit `apps/web/.env` with your deployed API URL
+
+2. **Deploy Frontend**:
+   ```bash
+   cd apps/web
+   vercel
+   ```
+
+### Option 3: Deploy Entire Monorepo (Advanced)
+
+You can deploy the entire monorepo using Vercel's monorepo support:
+
+1. Configure project settings in Vercel dashboard
+2. Set Project Settings → General → Root Directory to `apps/web`
+3. Add environment variables from your `.env` files
+4. Deploy by connecting the repository to Vercel
+
+**Note**: For production deployments, you'll need to host your backend separately or use a serverless approach.
