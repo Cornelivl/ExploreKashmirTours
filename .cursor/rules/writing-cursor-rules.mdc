@@ -1,0 +1,139 @@
+---
+description: Guidelines for creating and maintaining Cursor rules in the ExploreKashmirTours repository
+globs: .cursor/rules/**/*.mdc
+alwaysApply: true
+---
+
+# Writing Cursor Rules
+
+Cursor rules are configuration files that help the AI understand and enforce project-specific patterns, conventions, and best practices. These rules are automatically attached when working with matching files.
+When a file doesn't have applicable rules, write a new rule using these guidelines.
+
+## Key Guidelines
+
+- Each rule must have a clear, focused purpose
+- Rules should provide actionable guidance for the AI
+- Include practical examples with code snippets
+- Use glob patterns to target specific file types/directories
+- Reference existing implementations
+- Ensure rules are comprehensive but not overly verbose
+
+## Rule File Structure
+
+```markdown
+---
+description: Brief, clear description of what this rule enforces
+globs: src/**/*.ts, src/**/*.tsx  # Files this rule applies to
+alwaysApply: false  # Set to true if rule should always be included
+---
+
+# Rule Title
+
+Brief overview explaining the rule's purpose and when it applies.
+
+## Key Guidelines
+- List specific guidelines
+- What patterns to follow
+- What to avoid
+
+## Implementation Examples
+```typescript
+// ✅ Correct Pattern
+export function correctExample() {
+  // Example of the right way
+}
+
+// ❌ Incorrect Pattern
+export function wrongExample() {
+  // Example of what to avoid
+}
+```
+
+## Common Pitfalls
+- List typical mistakes
+- Why they're problematic
+- How to avoid them
+
+## Related Files
+@path/to/example.ts  # Example implementation
+@path/to/pattern.ts  # Reference pattern
+
+## Notes
+- Additional context or information about the rule
+- Special cases where the rule might be adapted
+```
+
+## Implementation Pattern
+
+1. **File Location**
+   ```
+   .cursor/rules/
+   └── your-rule-name.mdc    # Use kebab-case for filenames
+   ```
+
+2. **Frontmatter Structure**
+   ```yaml
+   ---
+   description: Clear purpose statement
+   globs: pattern/to/match/**/*.ts, pattern/to/match/**/*.tsx
+   alwaysApply: false  # Optional: set to true if rule should always be included
+   ---
+   ```
+
+3. **Content Sections**
+   - Title and Overview
+   - Key Guidelines
+   - Implementation Examples (with both correct and incorrect patterns)
+   - Common Pitfalls
+   - Related Files
+   - Notes (if needed)
+
+## Common Pitfalls
+
+❌ **Don't:**
+- Write vague or general rules
+- Mix multiple unrelated concerns
+- Omit practical code examples
+- Use imprecise glob patterns
+- Skip common pitfalls section
+- Create overlapping or conflicting rules
+
+✅ **Do:**
+- Focus on one specific pattern or convention
+- Include clear code examples
+- Use precise glob patterns
+- Reference existing implementations
+- Document edge cases and exceptions
+- Keep examples concise but informative
+- Update rules as project patterns evolve
+
+## Implementation Steps
+
+1. Identify a specific pattern that needs guidance
+2. Create a new .mdc file with kebab-case name
+3. Add frontmatter with description and globs
+4. Write clear guidelines with examples
+5. Include common pitfalls section
+6. Reference existing implementations
+7. Test the rule with matching files
+
+## Rule Management
+
+- **Review Rules Periodically**: Ensure rules stay aligned with current best practices
+- **Versioning**: Consider adding version information to track rule evolution
+- **Rule Coordination**: Ensure rules don't conflict or provide contradictory guidance
+- **Rule Validation**: Test new rules against real files to ensure they provide helpful guidance
+
+## Related Files
+
+@.cursor/rules/tanstack-router.mdc  # Example rule for TanStack Router
+@.cursor/rules/trpc-patterns.mdc     # Example rule for tRPC patterns
+
+## Notes
+- Rules are automatically attached to matching files
+- Keep rules focused and specific
+- Update rules as patterns evolve
+- Test rules with real use cases
+- Use consistent formatting across rules
+- Include both correct and incorrect examples
+- When creating a new rule, review existing rules to avoid duplication

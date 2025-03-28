@@ -1,0 +1,304 @@
+---
+description: Global architecture patterns and technology usage guidelines for the ExploreKashmirTours project
+globs: **/*.ts, **/*.tsx, **/*.js, **/*.jsx
+alwaysApply: true
+---
+
+# ExploreKashmirTours Architecture
+
+This rule provides an overview of the ExploreKashmirTours project architecture, technology stack, and coding patterns to ensure consistency across the codebase.
+
+## Project Structure
+
+- **Monorepo Structure**: Turborepo-based with apps and packages
+  - `apps/web`: Frontend application (React, Vite, TanStack Router)
+  - `apps/api`: Backend API (Express.js, tRPC, Drizzle)
+  - `packages/*`: Shared configurations and utilities
+
+## Technology Stack
+
+### Frontend (apps/web)
+- **Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **Routing**: TanStack Router (file-based routing in `src/routes`)
+- **API Communication**: tRPC client
+- **Styling**: TailwindCSS with shadcn/ui components
+- **State Management**: React Query via tRPC integration
+- **UI Components**: Custom shadcn/ui components in `src/components/ui/`
+
+### Backend (apps/api)
+- **Framework**: Express.js
+- **API Layer**: tRPC for type-safe API
+- **Database ORM**: Drizzle for type-safe database access
+- **Validation**: Zod schemas
+
+### Shared
+- **Package Manager**: pnpm (workspace)
+- **Build Orchestration**: Turborepo
+- **Type Safety**: TypeScript throughout
+- **Code Quality**: ESLint, Prettier
+
+## Key Patterns
+
+### Frontend Component Structure
+
+```tsx
+// ✅ Correct Pattern
+// UI components in components/ui/
+import { Button } from "@/components/ui/button";
+
+// Feature components in components/
+export function FeatureComponent() {
+  // Implementation
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold">Feature</h2>
+      <Button>Action</Button>
+    </div>
+  );
+}
+```
+
+### TailwindCSS Usage
+
+```tsx
+// ✅ Correct Pattern
+// Use Tailwind utility classes directly
+<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+  <h2 className="text-xl font-semibold text-gray-800">Title</h2>
+  <Button variant="outline" size="sm">Action</Button>
+</div>
+
+// ❌ Incorrect Pattern
+// Don't use inline styles
+<div style={{ display: 'flex', alignItems: 'center' }}>
+  <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Title</h2>
+</div>
+```
+
+### Data Fetching Pattern
+
+```tsx
+// ✅ Correct Pattern
+import { trpc } from "@/utils/trpc";
+
+function DataComponent() {
+  // Use tRPC hooks for data fetching
+  const query = trpc.someRouter.getData.useQuery();
+  
+  if (query.isLoading) return <div>Loading...</div>;
+  if (query.error) return <div>Error: {query.error.message}</div>;
+  
+  return (
+    <div>
+      <h1>{query.data.title}</h1>
+      {/* Component content */}
+    </div>
+  );
+}
+```
+
+### Database Access with Drizzle
+
+```typescript
+// ✅ Correct Pattern
+import { db } from "@/db";
+import { tours } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+// Query example
+const getTour = async (id: string) => {
+  return await db.query.tours.findFirst({
+    where: eq(tours.id, id),
+    with: {
+      destinations: true
+    }
+  });
+};
+
+// Mutation example
+const createTour = async (data: TourInsertType) => {
+  return await db.insert(tours).values(data).returning();
+};
+```
+
+## ShadCN UI Components
+
+Use the shadcn/ui component library for consistent UI elements:
+
+```tsx
+// ✅ Correct Pattern
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+function ComponentExample() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Card Title</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Card content goes here</p>
+        <Button>Click Me</Button>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Required Dependencies for shadcn Components
+
+For shadcn UI components, ensure these dependencies are installed:
+```
+@radix-ui/react-slot
+class-variance-authority
+clsx
+tailwind-merge
+tailwindcss-animate
+```
+
+For specific components like forms:
+```
+@radix-ui/react-label
+react-hook-form
+@hookform/resolvers
+zod
+```
+
+## Landing Page Components
+
+The ExploreKashmirTours landing page follows a specific structure:
+
+```tsx
+// ✅ Correct Pattern - Layout Component
+export const Layout = ({ children }: LayoutProps) => {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+      <BackToTop />
+    </div>
+  );
+};
+
+// Main Route Component
+function Index() {
+  return (
+    <Layout>
+      <Hero />
+      <FeaturedTours />
+      <About />
+      <Testimonials />
+      {/* Additional sections */}
+    </Layout>
+  );
+}
+```
+
+### Section Components
+- Hero: Full-width section with background image, overlay, heading, and CTA buttons
+- FeaturedTours: Grid of tour cards displaying tour options
+- About: Split layout with company information and image
+- Testimonials: Carousel/slider of customer testimonials
+- Each section has proper responsive behavior using Tailwind's responsive modifiers
+
+## Layout & Responsive Design
+
+```tsx
+// ✅ Correct Pattern
+// Use container classes and responsive utilities
+<div className="container mx-auto px-4 py-8 md:py-12 lg:py-16">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {/* Grid items */}
+  </div>
+</div>
+```
+
+## CSS Structure
+
+TailwindCSS configuration includes custom theme colors which are defined using CSS variables:
+
+```css
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    /* other color variables */
+  }
+  
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    /* dark mode variables */
+  }
+}
+```
+
+These are then used in the Tailwind configuration:
+
+```typescript
+// tailwind.config.ts
+colors: {
+  primary: {
+    DEFAULT: "hsl(var(--primary))",
+    foreground: "hsl(var(--primary-foreground))",
+  },
+  // other colors
+}
+```
+
+## Common Pitfalls
+
+- ❌ **Don't** mix different styling approaches (stick with TailwindCSS)
+- ❌ **Don't** fetch data directly with fetch/axios (use tRPC)
+- ❌ **Don't** create components without considering responsive design
+- ❌ **Don't** duplicate shadcn component styles or create redundant UI components
+- ❌ **Don't** use default exports (prefer named exports)
+- ❌ **Don't** forget to handle loading and error states
+- ❌ **Don't** use raw SQL when Drizzle query builders are available
+- ❌ **Don't** mix different database access patterns
+- ❌ **Don't** forget to install Radix UI dependencies for shadcn components
+
+## File Organization
+
+- Keep route components in `apps/web/src/routes/`
+- Place reusable UI components in `apps/web/src/components/ui/`
+- Feature components go in `apps/web/src/components/`
+- Section components (Hero, About, etc.) in `apps/web/src/components/`
+- Mock data files in `apps/web/src/data/`
+- Utility functions belong in `apps/web/src/utils/`
+- Common utilities in `apps/web/src/lib/`
+- Assets should be in `apps/web/src/assets/`
+- Backend endpoints go in `apps/api/src/router/`
+- Database schemas go in `apps/api/src/db/schema/`
+- Database migration files in `apps/api/drizzle/`
+
+## Related Files
+
+@apps/web/src/App.tsx                    # Main application entry point
+@apps/web/src/components/Layout.tsx      # Main layout component
+@apps/web/src/components/Header.tsx      # Header navigation
+@apps/web/src/components/Footer.tsx      # Footer component
+@apps/web/src/components/ui/button.tsx   # Button component example
+@apps/web/src/components/TrpcWrapper.tsx # tRPC provider setup
+@apps/web/src/routes/index.lazy.tsx      # Main landing page route
+@apps/web/src/lib/utils.ts               # Utility functions like cn()
+@apps/web/src/index.css                  # Global CSS and theme variables
+@apps/web/tailwind.config.ts             # Tailwind configuration
+@apps/api/src/server.ts                  # Backend server setup
+@apps/api/src/db/index.ts                # Database connection setup
+@apps/api/src/db/schema/index.ts         # Database schema definitions
+@apps/web/package.json                   # Frontend dependencies
+@apps/api/package.json                   # Backend dependencies
+
+## Notes
+
+- This is a monorepo setup - changes in shared packages affect all consuming apps
+- The frontend and backend share type definitions through tRPC
+- TanStack Router is used for routing with file-based route definition
+- Shadcn UI provides component primitives built on Radix UI and styled with Tailwind
+- Drizzle provides type-safe database access with a fluent query builder API
+- The landing page is designed to be deployed to Vercel 

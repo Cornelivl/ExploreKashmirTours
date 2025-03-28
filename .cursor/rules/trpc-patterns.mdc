@@ -1,0 +1,128 @@
+---
+description: Guidelines for working with tRPC in the ExploreKashmirTours application
+globs: apps/api/src/router/**/*.ts, apps/web/src/utils/trpc.ts, apps/web/src/components/TrpcWrapper.tsx
+alwaysApply: false
+---
+
+# tRPC Patterns and Conventions
+
+This rule provides guidance for working with tRPC within the application, ensuring consistent patterns and type safety between the frontend and backend.
+
+## Key Guidelines
+
+- Define backend routers in `apps/api/src/router/` directory
+- Use Zod schemas for input validation
+- Maintain proper TypeScript type safety throughout API definitions
+- Use TanStack Query features through tRPC hooks on the frontend
+- Follow the established error handling patterns
+
+## Backend Router Implementation
+
+```typescript
+// ✅ Correct Pattern
+import { z } from 'zod';
+import { publicProcedure, router } from '@api/trpc';
+
+// Define input schema with Zod
+export const inputSchema = z.object({
+  id: z.string(),
+  // other fields...
+});
+
+export const exampleRouter = router({
+  // Query procedure (for fetching data)
+  get: publicProcedure
+    .input(inputSchema)
+    .query(async ({ input }) => {
+      // Implementation
+      return { 
+        success: true, 
+        data: { /* returned data */ } 
+      };
+    }),
+    
+  // Mutation procedure (for modifying data)
+  update: publicProcedure
+    .input(inputSchema)
+    .mutation(async ({ input }) => {
+      // Implementation
+      return { success: true };
+    }),
+});
+```
+
+## Frontend tRPC Usage
+
+```typescript
+// ✅ Correct Pattern
+import { trpc } from '@/utils/trpc';
+
+// In a component:
+function ExampleComponent() {
+  // Query example
+  const query = trpc.example.get.useQuery({ id: 'some-id' });
+  
+  // Mutation example
+  const mutation = trpc.example.update.useMutation();
+  
+  // Handle loading/error states
+  if (query.isLoading) return <div>Loading...</div>;
+  if (query.error) return <div>Error: {query.error.message}</div>;
+  
+  // Use the data
+  return (
+    <div>
+      <h1>{query.data.title}</h1>
+      <button 
+        onClick={() => mutation.mutate({ id: 'some-id', /* other data */ })}
+      >
+        Update
+      </button>
+    </div>
+  );
+}
+```
+
+## Adding New Routers
+
+When adding a new router:
+
+1. Create a new file in `apps/api/src/router/`
+2. Define your procedures with proper input validation
+3. Add the router to the main appRouter in `apps/api/src/router/index.ts`:
+
+```typescript
+// ✅ Correct Pattern
+import { router } from '@api/trpc';
+import { existingRouter } from './existing';
+import { newRouter } from './new';
+
+export const appRouter = router({
+  existing: existingRouter,
+  new: newRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+## Common Pitfalls
+
+- ❌ **Don't** skip input validation with Zod schemas
+- ❌ **Don't** use `any` types that break type safety
+- ❌ **Don't** forget to handle loading and error states in the UI
+- ❌ **Don't** manually type API responses - leverage tRPC's type inference
+- ❌ **Don't** forget to add new routers to the main appRouter
+- ❌ **Don't** make backend-only code importable by the frontend
+
+## Related Files
+
+@apps/api/src/trpc.ts          # Backend tRPC setup
+@apps/api/src/router/index.ts  # Main router definition
+@apps/web/src/utils/trpc.ts    # Frontend tRPC client setup
+@apps/web/src/components/TrpcWrapper.tsx  # tRPC provider component
+
+## Notes
+
+- tRPC provides end-to-end type safety between the client and server
+- Always consider how error handling will work for both queries and mutations
+- Use tRPC's TanStack Query integration for efficient data fetching and caching 

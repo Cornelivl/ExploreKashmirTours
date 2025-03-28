@@ -1,0 +1,107 @@
+---
+description: Guidelines for working with TanStack Router in the ExploreKashmirTours application
+globs: apps/web/src/routes/**/*.tsx, apps/web/src/routes/**/*.ts
+alwaysApply: false
+---
+
+# TanStack Router Conventions
+
+This rule provides guidance for working with TanStack Router within the application, ensuring consistent patterns and type safety.
+
+## Key Guidelines
+
+- All routes should be defined in the `apps/web/src/routes/` directory
+- Use file-based routing conventions with TanStack Router
+- Standard routes should use `createFileRoute` or `createLazyFileRoute` for code-splitting
+- Maintain proper TypeScript type safety throughout route definitions
+- The root route serves as the layout wrapper for all routes
+
+## Route Types
+
+### Root Route
+```tsx
+// ✅ Correct Pattern
+import { createRootRoute, Outlet } from '@tanstack/react-router';
+
+export const Route = createRootRoute({
+  component: () => <Outlet />,
+});
+```
+
+### Standard Route
+```tsx
+// ✅ Correct Pattern
+import { createFileRoute } from '@tanstack/react-router';
+
+export const Route = createFileRoute('/some-path')({
+  component: SomeComponent,
+});
+
+function SomeComponent() {
+  // Component implementation
+}
+```
+
+### Lazy-loaded Route
+```tsx
+// ✅ Correct Pattern
+import { createLazyFileRoute } from '@tanstack/react-router';
+
+export const Route = createLazyFileRoute('/some-path')({
+  component: SomeComponent,
+});
+
+function SomeComponent() {
+  // Component implementation
+}
+```
+
+## Data Loading
+
+For routes that require data:
+
+```tsx
+// ✅ Correct Pattern
+import { createFileRoute } from '@tanstack/react-router';
+import { trpc } from '@/utils/trpc';
+
+export const Route = createFileRoute('/with-data')({
+  component: WithDataComponent,
+  // Optional loader for SSR or prefetching
+  loader: async () => {
+    return {
+      // Initial data or fetch details
+    };
+  },
+});
+
+function WithDataComponent() {
+  // Use tRPC for data fetching
+  const query = trpc.someRouter.someQuery.useQuery();
+  
+  // Use loader data if needed
+  const loaderData = Route.useLoaderData();
+  
+  // Rest of component
+}
+```
+
+## Common Pitfalls
+
+- ❌ **Don't** define routes outside of the routes directory
+- ❌ **Don't** use inline components in route definitions (extract them for better readability)
+- ❌ **Don't** mix different routing methodologies (stick with TanStack Router patterns)
+- ❌ **Don't** neglect route type safety by using `any` or ignoring TypeScript errors
+- ❌ **Don't** forget to add new routers to the main appRouter if adding tRPC functionality
+
+## Related Files
+
+@apps/web/src/routeTree.gen.ts  # Auto-generated route tree
+@apps/web/src/routes/__root.tsx  # Root route definition
+@apps/web/src/App.tsx  # Router provider setup
+
+## Notes
+
+- The `routeTree.gen.ts` file is automatically generated - don't edit it manually
+- When adding new routes, the route tree will be regenerated during development
+- TanStack Router uses TypeScript's type system extensively for type safety 

@@ -1,13 +1,22 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import { trpc } from '@/utils/trpc';
+import { Layout } from '@/components/Layout';
+import { Hero } from '@/components/Hero';
+import { FeaturedTours } from '@/components/FeaturedTours';
+import { About } from '@/components/About';
+import { Testimonials } from '@/components/Testimonials';
 
 export const Route = createLazyFileRoute('/')({
   component: Index,
 });
 
 function Index() {
-  const query = trpc.hello.get.useQuery({ name: 'Jonas' });
-
-  return <p className="text-xl">Message: {query.data?.message}</p>;
+  return (
+    <Layout>
+      <Hero />
+      <FeaturedTours />
+      <About />
+      <Testimonials />
+    </Layout>
+  );
 }
