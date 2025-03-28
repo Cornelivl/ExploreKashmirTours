@@ -1,0 +1,10 @@
+{
+  "workspaces": {
+    "web": {
+      "name": "exploreksahmirtours-web"
+    },
+    "api": {
+      "name": "exploreksahmirtours-api"
+    }
+  }
+} 

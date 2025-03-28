@@ -24,7 +24,6 @@ This rule provides an overview of the ExploreKashmirTours project architecture, 
 - **API Communication**: tRPC client
 - **Styling**: TailwindCSS with shadcn/ui components
 - **State Management**: React Query via tRPC integration
-- **UI Components**: Custom shadcn/ui components in `src/components/ui/`
 
 ### Backend (apps/api)
 - **Framework**: Express.js
@@ -146,63 +145,6 @@ function ComponentExample() {
 }
 ```
 
-### Required Dependencies for shadcn Components
-
-For shadcn UI components, ensure these dependencies are installed:
-```
-@radix-ui/react-slot
-class-variance-authority
-clsx
-tailwind-merge
-tailwindcss-animate
-```
-
-For specific components like forms:
-```
-@radix-ui/react-label
-react-hook-form
-@hookform/resolvers
-zod
-```
-
-## Landing Page Components
-
-The ExploreKashmirTours landing page follows a specific structure:
-
-```tsx
-// ✅ Correct Pattern - Layout Component
-export const Layout = ({ children }: LayoutProps) => {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-      <BackToTop />
-    </div>
-  );
-};
-
-// Main Route Component
-function Index() {
-  return (
-    <Layout>
-      <Hero />
-      <FeaturedTours />
-      <About />
-      <Testimonials />
-      {/* Additional sections */}
-    </Layout>
-  );
-}
-```
-
-### Section Components
-- Hero: Full-width section with background image, overlay, heading, and CTA buttons
-- FeaturedTours: Grid of tour cards displaying tour options
-- About: Split layout with company information and image
-- Testimonials: Carousel/slider of customer testimonials
-- Each section has proper responsive behavior using Tailwind's responsive modifiers
-
 ## Layout & Responsive Design
 
 ```tsx
@@ -215,41 +157,6 @@ function Index() {
 </div>
 ```
 
-## CSS Structure
-
-TailwindCSS configuration includes custom theme colors which are defined using CSS variables:
-
-```css
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
-    --primary: 142.1 76.2% 36.3%;
-    --primary-foreground: 355.7 100% 97.3%;
-    /* other color variables */
-  }
-  
-  .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    /* dark mode variables */
-  }
-}
-```
-
-These are then used in the Tailwind configuration:
-
-```typescript
-// tailwind.config.ts
-colors: {
-  primary: {
-    DEFAULT: "hsl(var(--primary))",
-    foreground: "hsl(var(--primary-foreground))",
-  },
-  // other colors
-}
-```
-
 ## Common Pitfalls
 
 - ❌ **Don't** mix different styling approaches (stick with TailwindCSS)
@@ -260,17 +167,13 @@ colors: {
 - ❌ **Don't** forget to handle loading and error states
 - ❌ **Don't** use raw SQL when Drizzle query builders are available
 - ❌ **Don't** mix different database access patterns
-- ❌ **Don't** forget to install Radix UI dependencies for shadcn components
 
 ## File Organization
 
 - Keep route components in `apps/web/src/routes/`
 - Place reusable UI components in `apps/web/src/components/ui/`
 - Feature components go in `apps/web/src/components/`
-- Section components (Hero, About, etc.) in `apps/web/src/components/`
-- Mock data files in `apps/web/src/data/`
 - Utility functions belong in `apps/web/src/utils/`
-- Common utilities in `apps/web/src/lib/`
 - Assets should be in `apps/web/src/assets/`
 - Backend endpoints go in `apps/api/src/router/`
 - Database schemas go in `apps/api/src/db/schema/`
@@ -278,21 +181,13 @@ colors: {
 
 ## Related Files
 
-@apps/web/src/App.tsx                    # Main application entry point
-@apps/web/src/components/Layout.tsx      # Main layout component
-@apps/web/src/components/Header.tsx      # Header navigation
-@apps/web/src/components/Footer.tsx      # Footer component
-@apps/web/src/components/ui/button.tsx   # Button component example
-@apps/web/src/components/TrpcWrapper.tsx # tRPC provider setup
-@apps/web/src/routes/index.lazy.tsx      # Main landing page route
-@apps/web/src/lib/utils.ts               # Utility functions like cn()
-@apps/web/src/index.css                  # Global CSS and theme variables
-@apps/web/tailwind.config.ts             # Tailwind configuration
-@apps/api/src/server.ts                  # Backend server setup
-@apps/api/src/db/index.ts                # Database connection setup
-@apps/api/src/db/schema/index.ts         # Database schema definitions
-@apps/web/package.json                   # Frontend dependencies
-@apps/api/package.json                   # Backend dependencies
+@apps/web/src/App.tsx                  # Main application entry point
+@apps/web/src/components/TrpcWrapper.tsx  # tRPC provider setup
+@apps/api/src/server.ts                # Backend server setup
+@apps/api/src/db/index.ts              # Database connection setup
+@apps/api/src/db/schema/index.ts       # Database schema definitions
+@apps/web/package.json                 # Frontend dependencies
+@apps/api/package.json                 # Backend dependencies
 
 ## Notes
 
@@ -301,4 +196,4 @@ colors: {
 - TanStack Router is used for routing with file-based route definition
 - Shadcn UI provides component primitives built on Radix UI and styled with Tailwind
 - Drizzle provides type-safe database access with a fluent query builder API
-- The landing page is designed to be deployed to Vercel 
+- Deploy the frontend to Vercel and backend separately 

@@ -11,7 +11,14 @@ async function main() {
 
   const app = express();
 
-  app.use(cors());
+  app.use(cors({
+    origin: [
+      'http://localhost:5173', // Local development frontend
+      'https://exploreksahmirtours-web.vercel.app', // Production frontend
+      /\.vercel\.app$/ // Any Vercel preview deployments
+    ],
+    credentials: true
+  }));
 
 
   app.use(
