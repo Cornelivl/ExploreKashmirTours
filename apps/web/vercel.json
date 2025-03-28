@@ -7,6 +7,6 @@
     { "source": "/(.*)", "destination": "/" }
   ],
   "env": {
-    "VITE_API_URL": "https://api-exploreksahmirtours.vercel.app"
+    "VITE_API_URL": "https://naserkashmirtours-api.vercel.app"
   }
 } 

@@ -1,10 +1,10 @@
 {
   "workspaces": {
     "web": {
-      "name": "exploreksahmirtours-web"
+      "name": "naserkashmirtours-web"
     },
     "api": {
-      "name": "exploreksahmirtours-api"
+      "name": "naserkashmirtours-api"
     }
   }
 } 

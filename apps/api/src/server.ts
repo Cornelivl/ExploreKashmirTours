@@ -14,7 +14,7 @@ async function main() {
   app.use(cors({
     origin: [
       'http://localhost:5173', // Local development frontend
-      'https://exploreksahmirtours-web.vercel.app', // Production frontend
+      'https://naserkashmirtours-web.vercel.app', // Production frontend
       /\.vercel\.app$/ // Any Vercel preview deployments
     ],
     credentials: true
