@@ -1,5 +1,6 @@
 {
   "name": "@repo/api",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -22,8 +23,8 @@
     "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "file:../../packages/eslint-config",
+    "@repo/typescript-config": "file:../../packages/typescript-config",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.6",
